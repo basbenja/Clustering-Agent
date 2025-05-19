@@ -1,25 +1,24 @@
 import os
+import re
 
-from langchain.llms.base import LLM
+from langchain_core.language_models.llms import LLM
 from tools import output_path
 
 csv_filename = 'iris_data_challenge.csv'
 csv_path = os.path.join(os.path.dirname(os.getcwd()), csv_filename)
 
 class FakeSimpleLLM(LLM):
-    has_clustered: bool = False
-    has_summarized: bool = False
-
     def _call(self, prompt, stop=None):
-        if not self.has_clustered and "clusteriz" in prompt.lower():
-            self.has_clustered = True
+        questions = re.findall(r"Question: (.+?)\n", prompt)
+        question = questions[-1]
+
+        if "clusterize" in question.lower():
             return (
                 "Thought: I will cluster the data and summarize it.\n"
                 "Action: clusterize\n"
                 f"Action Input: \"{csv_path}\""
             )
-        elif not self.has_summarized and "summariz" in prompt.lower():
-            self.has_summarized = True
+        elif "summarize" in question.lower():
             return (
                 "Thought: I will summarize the clustered data.\n"
                 "Action: summarize\n"

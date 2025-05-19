@@ -10,9 +10,9 @@ tools = [clusterize, summarize]
 agent = initialize_agent(
     tools=tools,
     llm=fake_llm,
+    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     handle_parsing_errors=True,
     max_iterations=1,
-    verbose=True
 )
 
 
