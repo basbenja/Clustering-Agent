@@ -8,7 +8,6 @@ from sklearn.cluster import KMeans
 filename = 'iris_data_challenge.csv'
 file_path = os.path.join(os.path.dirname(os.getcwd()), filename)
 
-
 def main():
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File {filename} not found in the current directory.")
