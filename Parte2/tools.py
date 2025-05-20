@@ -1,16 +1,12 @@
 import os
 import pandas as pd
 
-from langchain_core.tools import tool
-
 from sklearn.impute import KNNImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 
-output_filename = 'iris_data_challenge_with_clusters.csv'
-output_path = os.path.join(os.path.dirname(os.getcwd()), output_filename)
+from constants import OUTPUT_PATH
 
-@tool
 def clusterize(path_csv: str) -> str:
     """Clusters the data in the given CSV file and returns a summary of the first few rows."""
 
@@ -44,12 +40,11 @@ def clusterize(path_csv: str) -> str:
     df['cluster'] = kmeans.labels_
     df['cluster'] = df['cluster'].astype('category')
 
-    df.to_csv(output_path, index=False)
+    df.to_csv(OUTPUT_PATH, index=False)
 
-    return f"✅ Clusterized data into 5 groups and saved to {output_path}."
+    return f"✅ Clusterized data into 5 groups and saved to {OUTPUT_PATH}."
 
 
-@tool
 def summarize(csv_with_clusters_path) -> str:
     """Summarizes the clustered data in the CSV file."""
     if not os.path.exists(csv_with_clusters_path):
@@ -58,7 +53,7 @@ def summarize(csv_with_clusters_path) -> str:
     df = pd.read_csv(csv_with_clusters_path)
 
     summary = ""
-    for value in df['cluster'].unique():
+    for value in sorted(df['cluster'].unique()):
         cluster_df = df[df['cluster'] == value]
         summary += f"Cluster {value}:\n"
         summary += f"  - Count: {len(cluster_df)}\n"
